@@ -9,8 +9,8 @@ import Subscribe from './models/Subscribe.js'
 dotenv.config();
 
 const allowedOrigins = [
-    'https://your-other-frontend.netlify.app',
-    'https://chireshtha-brighture-innovation.netlify.app',
+    'chireshtha-portfolio.netlify.app',
+    'chireshtha-brighture-innovation.netlify.app',
     'https://contact-backend-nput.onrender.com'
 ];
 
