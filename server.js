@@ -37,7 +37,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
     .catch((err) => console.log("MongoDb Connection Error", err));
 
-app.post('/contact', async (req, res) => {
+app.post('/contact/:id', async (req, res) => {
     const { name, email, subject, message } = req.body;
     try {
         const newMsg = new Message({ name, email, subject, message });
@@ -50,7 +50,7 @@ app.post('/contact', async (req, res) => {
     }
 });
 
-app.post('/messageme', async (req, res) => {
+app.post('/messageme/:id', async (req, res) => {
     const { first_name, last_name, email, ph_no, message } = req.body;
     try {
         const newSecondMsg = new ContactMsg({ first_name, last_name, email, ph_no, message });
