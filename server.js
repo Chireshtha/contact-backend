@@ -50,7 +50,7 @@ app.post('/contact', async (req, res) => {
     }
 });
 
-app.post('/contact-me', async (req, res) => {
+app.post('/message-me', async (req, res) => {
     const { first_name, last_name, email, ph_no, message } = req.body;
     try {
         const newSecondMsg = new ContactMsg({ first_name, last_name, email, ph_no, message });
