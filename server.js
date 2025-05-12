@@ -10,9 +10,16 @@ dotenv.config();
 
 
 const app = express();
+// ✔️ 1) Whitelist both origins at once
+const allowedOrigins = [
+  'https://chireshtha-portfolio.netlify.app',
+  'https://chireshtha-brighture-innovation.netlify.app'
+];
+
 app.use(cors({
-  origin: 'https://chireshtha-brighture-innovation.netlify.app',
-  origin: 'https://chireshtha-portfolio.netlify.app'
+  origin: allowedOrigins,           // pass the array here
+  methods: ['GET','POST','OPTIONS'],
+  credentials: true
 }));
 app.use(express.json());
 
