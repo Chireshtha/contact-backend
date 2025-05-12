@@ -17,22 +17,9 @@ const allowed = new Set([
 ]);
 
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  console.log(`CORS: incoming Origin=${origin}, method=${req.method}, path=${req.path}`);
-  if (!origin || allowed.has(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    if (req.method === 'OPTIONS') {
-      console.log('↪ Preflight handled');
-      return res.sendStatus(200);
-    }
-    return next();
-  }
-  console.log('⛔ CORS block for', origin);
-  res.status(403).send('CORS Forbidden');
-});
+  res.setHeader('Access-Control-Allow-Origin', FRONTEND_URL)
+  next()
+})
 
 // 2) JSON parser
 app.use(express.json());
