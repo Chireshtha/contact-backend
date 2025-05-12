@@ -12,22 +12,26 @@ dotenv.config();
 const app = express();
  
 
-app.use(cors({
-  origin: 'https://chireshtha-brighture-innovation.netlify.app',
+// ✅ CORS config
+const corsOptions = {
+  origin: 'https://chireshtha-brighture-innovation.netlify.app', // Your frontend domain
   methods: ['GET', 'POST'],
-  credentials: true
-}));
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
-// 2) JSON parser
+// ✅ Body parser
 app.use(express.json());
 
-// 3) Simple logger
+// ✅ Logger
 app.use((req, res, next) => {
-  console.log(`→ ${req.method} ${req.path}`, req.body);
+  console.log(`${req.method} ${req.path}`, req.body);
   next();
 });
 
-// 4) Health check
+// ✅ Health route
 app.get('/', (req, res) => res.send('👋 API is live'));
 
 mongoose.connect(process.env.MONGO_URI)
