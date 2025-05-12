@@ -8,35 +8,36 @@ import Subscribe from './models/Subscribe.js';
 
 dotenv.config();
 
+const app = express();
+
 const allowedOrigins = [
   'https://chireshtha-portfolio.netlify.app',
   'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    console.log("Origin:", origin);
+app.use(cors({
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
+      return callback(null, true);
+    } 
       callback(new Error('Not allowed by CORS'));
-    }
+    
   },
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true
-};
-
-const app = express();
-app.use(cors(corsOptions));
+}));
+app.options('*', cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log(`→ ${req.method} ${req.path}`, req.body);
-  next();
+    console.log(`→ ${req.method} ${req.path}`, req.body);
+    next();
 });
 
-
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Connection Error", err));
 
