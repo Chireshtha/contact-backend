@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
 
 import Message from './models/Message.js';
 import ContactMsg from './models/ContactMsg.js';
@@ -10,50 +9,55 @@ import Subscribe from './models/Subscribe.js';
 dotenv.config();
 const app = express();
 
-// 1) Configure your allowed origins
+// ▶️ 1. CUSTOM CORS MIDDLEWARE (must be FIRST)
 const allowedOrigins = [
   'https://chireshtha-portfolio.netlify.app',
-  'https://chireshtha-brighture-innovation.netlify.app',
-  'https://company-contact-backend-nput.onrender.com'
+  'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-// 2) Central CORS middleware
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  console.log('CORS check origin:', origin);
+
   if (!origin || allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    // Automatically end preflight requests
-    if (req.method === 'OPTIONS') return res.sendStatus(200);
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    if (req.method === 'OPTIONS') {
+      console.log('↪ Preflight OK');
+      return res.sendStatus(200);
+    }
+
     return next();
   }
-  // Reject other origins
+
+  console.log('⛔ CORS Forbidden for origin:', origin);
   res.status(403).send('CORS Forbidden');
 });
 
-// 3) Parse JSON bodies
+// ▶️ 2. BODY PARSER
 app.use(express.json());
 
-// 4) Simple health-check
-app.get('/', (req, res) => res.send('👋 Contact API is live'));
-
-// 5) Debug logging
+// ▶️ 3. REQUEST LOGGER
 app.use((req, res, next) => {
   console.log(`→ ${req.method} ${req.path}`, req.body);
   next();
 });
 
-// 6) Connect to MongoDB
+// ▶️ 4. HEALTH CHECK
+app.get('/', (req, res) => res.send('👋 Contact API is live'));
+
+// ▶️ 5. MONGODB CONNECTION
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
+  useNewUrlParser:    true,
   useUnifiedTopology: true
 })
 .then(() => console.log('✅ MongoDB Connected'))
-.catch(err => console.error('❌ MongoDB Connection Error:', err));
+.catch(err => console.error('❌ MongoDB Error:', err));
 
-// 7) Your POST endpoints
+// ▶️ 6. YOUR ROUTES
 app.post('/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
@@ -87,6 +91,6 @@ app.post('/subscribe', async (req, res) => {
   }
 });
 
-// 8) Start the server
+// ▶️ 7. START SERVER
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
