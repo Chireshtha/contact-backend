@@ -15,17 +15,19 @@ const allowedOrigins = [
   'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } 
-      callback(new Error('Not allowed by CORS'));
-    
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true
-}));
+// 1) Unified CORS handler for preflight & actual requests
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    if (req.method === 'OPTIONS') return res.sendStatus(200);
+    return next();
+  }
+  res.status(403).send('CORS Forbidden');
+});
 // app.options('*', cors());
 app.use(express.json());
 
@@ -33,6 +35,8 @@ app.use((req, res, next) => {
     console.log(`→ ${req.method} ${req.path}`, req.body);
     next();
 });
+app.get('/', (req, res) => res.send('👋 Contact API is live'));
+
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
