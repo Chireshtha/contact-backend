@@ -13,7 +13,8 @@ const app = express();
 // 1) Configure your allowed origins
 const allowedOrigins = [
   'https://chireshtha-portfolio.netlify.app',
-  'https://chireshtha-brighture-innovation.netlify.app'
+  'https://chireshtha-brighture-innovation.netlify.app',
+  'https://company-contact-backend-nput.onrender.com'
 ];
 
 // 2) Central CORS middleware
