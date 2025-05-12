@@ -26,7 +26,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true
 }));
-app.options('*', cors());
+// app.options('*', cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
