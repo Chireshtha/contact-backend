@@ -9,26 +9,26 @@ import Subscribe from './models/Subscribe.js'
 dotenv.config();
 
 
-const app = express();
- 
+const express = require('express');
+const cors = require('cors');
 
-// ✅ CORS config
-const corsOptions = {
-  origin: 'https://chireshtha-brighture-innovation.netlify.app', // Your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200
+
+/* const corsOptions = {
+ origin: 'https://chireshtha-brighture-innovation.netlify.app', // Your frontend domain
+ methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+ allowedHeaders: ['Content-Type', 'Authorization'],
+ credentials: true,
+ optionsSuccessStatus: 200
 };
-app.use(cors(corsOptions));
-
-// ✅ Body parser
+app.use(cors(corsOptions)); */
+// Use the cors middleware
+app.use(cors({
+    origin: 'https://chireshtha-brighture-innovation.netlify.app' // Allow requests from your Netlify origin
+}));
 app.use(express.json());
-
-// ✅ Logger
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`, req.body);
-  next();
+    console.log(`${req.method} ${req.path}`, req.body);
+    next();
 });
 
 // ✅ Health route
