@@ -11,33 +11,29 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    'https://chireshtha-portfolio.netlify.app',
-    'https://chireshtha-brighture-innovation.netlify.app'
+  'https://chireshtha-portfolio.netlify.app',
+  'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-        if (req.method === 'OPTIONS') {
-            return res.sendStatus(200); // Preflight request success
-        }
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
     }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
-    next();
-});
-
+app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log(`→ ${req.method} ${req.path}`, req.body);
-    next();
-});
 app.get('/', (req, res) => res.send('👋 Contact API is live'));
 
 
