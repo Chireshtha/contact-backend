@@ -9,17 +9,10 @@ import Subscribe from './models/Subscribe.js'
 dotenv.config();
 
 
-const app = express(); // ✅ You missed this line!
-
-app.use(cors({
-    origin: 'https://chireshtha-brighture-innovation.netlify.app' // ✅ Frontend origin
-}));
-app.use(express.json());
-
+const app = express();
  
 
 // ✅ CORS config
-/*
 const corsOptions = {
   origin: 'https://chireshtha-brighture-innovation.netlify.app', // Your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -27,10 +20,10 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200
 };
-app.use(cors(corsOptions)); */
+app.use(cors(corsOptions));
 
 // ✅ Body parser
-// app.use(express.json());
+app.use(express.json());
 
 // ✅ Logger
 app.use((req, res, next) => {
