@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
+// import cors from 'cors';
 import Message from './models/Message.js';
 import ContactMsg from './models/ContactMsg.js';
 import Subscribe from './models/Subscribe.js';
