@@ -10,26 +10,23 @@ dotenv.config();
 
 const app = express();
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // allow mobile apps or curl
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
+const allowedOrigins = [
+    'https://chireshtha-portfolio.netlify.app',
+    'https://chireshtha-brighture-innovation.netlify.app'
+];
 
-// ✅ Middlewares
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true
+}));
+
 app.use(express.json());
 
-// ✅ Test route
+app.use((req, res, next) => {
+    console.log(`→ ${req.method} ${req.path}`, req.body);
+    next();
+});
 app.get('/', (req, res) => res.send('👋 Contact API is live'));
 
 
