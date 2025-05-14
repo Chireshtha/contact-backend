@@ -39,9 +39,11 @@ mongoose.connect(process.env.MONGO_URI, {
     .then(() => console.log("MongoDB Connected"))
     .catch((err) => console.log("MongoDB Connection Error", err));
 
-app.post('/contact', async (req, res) => {
+app.post('/contact/:id', async (req, res) => {
+    const { id } = req.params; 
     const { name, email, subject, message } = req.body;
     try {
+        console.log('Received ID:', id);
         const newMsg = new Message({ name, email, subject, message });
         await newMsg.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
@@ -51,9 +53,11 @@ app.post('/contact', async (req, res) => {
     }
 });
 
-app.post('/messageme', async (req, res) => {
+app.post('/messageme/:id', async (req, res) => {
+    const { id } = req.params; 
     const { first_name, last_name, email, ph_no, message } = req.body;
     try {
+        console.log('Received ID:', id);
         const newSecondMsg = new ContactMsg({ first_name, last_name, email, ph_no, message });
         await newSecondMsg.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
@@ -63,9 +67,11 @@ app.post('/messageme', async (req, res) => {
     }
 });
 
-app.post('/subscribe', async (req, res) => {
+app.post('/subscribe/:id', async (req, res) => {
+    const { id } = req.params; 
     const { name, email } = req.body;
     try {
+        console.log('Received ID:', id);
         const newSubscribe = new Subscribe({ name, email });
         await newSubscribe.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
