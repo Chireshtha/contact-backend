@@ -11,25 +11,29 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'https://chireshtha-portfolio.netlify.app',
-  'https://chireshtha-brighture-innovation.netlify.app'
+    'https://chireshtha-portfolio.netlify.app',
+    'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true
+}));
+app.use(express.json());
 
-app.use(cors(corsOptions));
- 
+app.use((req, res, next) => {
+    console.log(`→ ${req.method} ${req.path}`, req.body);
+    next();
+});
+app.get('/', (req, res) => res.send('👋 Contact API is live'));
+
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -38,11 +42,9 @@ mongoose.connect(process.env.MONGO_URI, {
     .then(() => console.log("MongoDB Connected"))
     .catch((err) => console.log("MongoDB Connection Error", err));
 
-app.post('/contact/:id', async (req, res) => {
-    const { id } = req.params; 
+app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
     try {
-        console.log('Received ID:', id);
         const newMsg = new Message({ name, email, subject, message });
         await newMsg.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
@@ -52,11 +54,9 @@ app.post('/contact/:id', async (req, res) => {
     }
 });
 
-app.post('/messageme/:id', async (req, res) => {
-    const { id } = req.params; 
+app.post('/messageme', async (req, res) => {
     const { first_name, last_name, email, ph_no, message } = req.body;
     try {
-        console.log('Received ID:', id);
         const newSecondMsg = new ContactMsg({ first_name, last_name, email, ph_no, message });
         await newSecondMsg.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
@@ -66,11 +66,9 @@ app.post('/messageme/:id', async (req, res) => {
     }
 });
 
-app.post('/subscribe/:id', async (req, res) => {
-    const { id } = req.params; 
+app.post('/subscribe', async (req, res) => {
     const { name, email } = req.body;
     try {
-        console.log('Received ID:', id);
         const newSubscribe = new Subscribe({ name, email });
         await newSubscribe.save();
         res.status(200).json({ success: true, message: 'Message Saved' });
