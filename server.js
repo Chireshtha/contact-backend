@@ -11,23 +11,25 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    'https://chireshtha-portfolio.netlify.app',
-    'https://chireshtha-brighture-innovation.netlify.app'
+  'https://chireshtha-portfolio.netlify.app',
+  'https://chireshtha-brighture-innovation.netlify.app'
 ];
 
-app.use(cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'OPTIONS'],
-    credentials: true
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
 
-app.use(express.json());
-
-app.use((req, res, next) => {
-    console.log(`→ ${req.method} ${req.path}`, req.body);
-    next();
-});
-app.get('/', (req, res) => res.send('👋 Contact API is live'));
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 
 
 mongoose.connect(process.env.MONGO_URI, {
