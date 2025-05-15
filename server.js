@@ -16,35 +16,31 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
 }));
-
-app.options('*', cors());
-
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log(`[${req.method}] ${req.path}`);
-  next();
+    console.log(`→ ${req.method} ${req.path}`, req.body);
+    next();
 });
-
 app.get('/', (req, res) => res.send('👋 Contact API is live'));
+
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log("MongoDB Connected"))
-.catch((err) => console.log("MongoDB Connection Error", err));
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => console.log("MongoDB Connection Error", err));
 
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
