@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-// CORS settings
+// ✅ CORS Configuration
 const allowedOrigins = [
   'https://chireshtha-brighture-innovation.netlify.app',
   'https://www.chireshtha-brighture-innovation.netlify.app',
@@ -29,7 +29,18 @@ app.use(cors({
   credentials: true
 }));
 
-// Preflight handling
+app.use(express.json());
+
+// ✅ Explicit Preflight Handler for /subscribe
+app.options('/subscribe', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  return res.sendStatus(200);
+});
+
+// ✅ Optional: General preflight handler (can be removed if route-specific works)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -38,14 +49,6 @@ app.use((req, res, next) => {
     return res.sendStatus(200);
   }
   next();
-});
-
-// Specific OPTIONS route for /subscribe
-app.options('/subscribe', (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  return res.sendStatus(200);
 });
 
 app.use(express.json());
