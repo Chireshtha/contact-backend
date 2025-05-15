@@ -9,11 +9,7 @@ import Subscribe from './models/Subscribe.js';
 dotenv.config();
 
 const app = express();
-
-const allowedOrigins = [
-    'https://chireshtha-portfolio.netlify.app',
-    'https://chireshtha-brighture-innovation.netlify.app'
-];
+ 
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -29,16 +25,11 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 200
 }));
-
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
-});
 app.use(express.json());
 
 app.use((req, res, next) => {
