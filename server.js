@@ -11,8 +11,8 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    'https://chireshtha-portfolio.netlify.app',
-    'https://chireshtha-brighture-innovation.netlify.app'
+    'chireshtha-portfolio.netlify.app',
+    'chireshtha-brighture-innovation.netlify.app'
 ];
 
 app.use(cors({
