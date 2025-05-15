@@ -28,25 +28,23 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Handle preflight OPTIONS requests globally
 app.options('*', cors());
 
-// Middleware
 app.use(express.json());
 
 app.use((req, res, next) => {
   console.log(`[${req.method}] ${req.path}`);
   next();
 });
-app.get('/', (req, res) => res.send('👋 Contact API is live'));
 
+app.get('/', (req, res) => res.send('👋 Contact API is live'));
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-    .then(() => console.log("MongoDB Connected"))
-    .catch((err) => console.log("MongoDB Connection Error", err));
+.then(() => console.log("MongoDB Connected"))
+.catch((err) => console.log("MongoDB Connection Error", err));
 
 app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
