@@ -5,7 +5,7 @@ const applicationSchema = new mongoose.Schema({
     email: String,
     ph_no: String,
     upload_file: String,
-    message: File,
+    message: String,
     CreatedAt: {
         type: Date,
         default: Date.now
