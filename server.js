@@ -5,6 +5,7 @@ import cors from 'cors';
 import Message from './models/Message.js';
 import ContactMsg from './models/ContactMsg.js';
 import Subscribe from './models/Subscribe.js';
+import  JobApplication from './models/Applyjob.js'
 
 dotenv.config();
 
@@ -75,6 +76,19 @@ app.post('/subscribe', async (req, res) => {
     } catch (error) {
         console.log("Error Saving Message:", error);
         res.status(500).json({ success: false, message: 'Failed to save message' });
+    }
+});
+
+app.post('/applyjob', async (req, res) => {
+    const { fullname, email, ph_no, upload_file, message } = req.body;
+    try{
+        const newApply = new JobApplication({ fullname, email, ph_no, upload_file, message });
+        await newApply.save();
+        res.status(200).json({ success: true, message: 'Message Saved'});
+    }
+    catch(error){
+        console.log('Error Saving Message:', error);
+        res.status(500).json({ success: false, message: 'Failed to save message'});
     }
 });
 
