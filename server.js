@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import fs from 'fs'
+import path from 'path';
+import multer from 'multer';
 import Message from './models/Message.js';
 import ContactMsg from './models/ContactMsg.js';
 import Subscribe from './models/Subscribe.js';
@@ -79,10 +82,29 @@ app.post('/subscribe', async (req, res) => {
     }
 });
 
-app.post('/applyjob', async (req, res) => {
-    const { fullname, email, ph_no, upload_file, message } = req.body;
+//Create uploads folder if doesn't exist
+const uploadDir = 'uploads';
+if(!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+    destination:function(req, file, cb){
+        cb(null, uploadDir);
+    },
+    filename:function(req, file, cb){
+        const uniqueName = Date.now() + '-' + file.originalname;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({storage});
+
+app.post('/applyjob', upload.single('upload_file'), async (req, res) => {
+    const { fullname, email, ph_no, message } = req.body;
+    const file_path = req.file ? req.file.path : ''; 
     try{
-        const newApply = new JobApplication({ fullname, email, ph_no, upload_file, message });
+        const newApply = new JobApplication({ fullname, email, ph_no, upload_file: file_path, message });
         await newApply.save();
         res.status(200).json({ success: true, message: 'Message Saved'});
     }
